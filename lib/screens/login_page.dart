@@ -11,6 +11,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -21,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _handleLogin() {
     // Implement login logic here
+    Navigator.pushReplacementNamed(context, '/home');
     print('Login attempted');
   }
 
@@ -219,7 +221,7 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: _handleLogin,
+        onPressed: _isLoading ? null : _handleLogin,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           padding: EdgeInsets.symmetric(vertical: 16),
@@ -227,7 +229,15 @@ class _LoginPageState extends State<LoginPage> {
             borderRadius: BorderRadius.circular(8),
           ),
         ),
-        child: Text(
+        child: _isLoading ? const SizedBox(
+          height: 20,
+          width: 20,
+          child: CircularProgressIndicator(
+            color: AppColors.white,
+            strokeWidth: 2,
+          ),
+        )
+            : const Text(
           'Login',
           style: TextStyle(
             fontSize: 16,

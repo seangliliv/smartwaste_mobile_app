@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/app_color.dart';
 import '../utils/constants.dart';
 import '../widgets/logo_widget.dart';
+import '../services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -20,6 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _agreeToTerms = false;
+  bool _isLoading = false;
   String _selectedDistrict = AppConstants.districts.first;
 
   @override
@@ -33,10 +35,50 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  void _handleRegister() {
-    if (_formKey.currentState!.validate() && _agreeToTerms) {
-      // Implement registration logic
-      print('Registration attempted');
+  void _handleRegister() async {
+    if (!_formKey.currentState!.validate()) return;
+    if (!_agreeToTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please agree to Terms of Service and Privacy Policy')),
+      );
+      return;
+    }
+    if (_selectedDistrict == AppConstants.districts.first) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select a district')),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      RegisterResult result = await AuthService.register(
+        fullName: _fullNameController.text.trim(),
+        email: _emailController.text.trim(),
+        phone: _phoneController.text.trim(),
+        password: _passwordController.text,
+        district: _selectedDistrict,
+        streetAddress: _streetAddressController.text.trim(),
+      );
+
+      setState(() => _isLoading = false);
+
+      if (result.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message), backgroundColor: Colors.green),
+        );
+        Navigator.pop(context); // Go back to login
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Registration failed. Please try again.'), backgroundColor: Colors.red),
+      );
     }
   }
 
@@ -332,7 +374,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Container(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: _agreeToTerms ? _handleRegister : null,
+        onPressed: _isLoading ? null : _handleRegister,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           padding: EdgeInsets.symmetric(vertical: 16),
@@ -340,7 +382,16 @@ class _RegisterPageState extends State<RegisterPage> {
             borderRadius: BorderRadius.circular(8),
           ),
         ),
-        child: Text(
+        child: _isLoading
+            ? SizedBox(
+          height: 20,
+          width: 20,
+          child: CircularProgressIndicator(
+            color: AppColors.white,
+            strokeWidth: 2,
+          ),
+        )
+            : Text(
           'Create Account',
           style: TextStyle(
             fontSize: 16,
