@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waste_management_app/screens/map_page.dart';
 import '../utils/app_color.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,8 +36,8 @@ class _HomePageState extends State<HomePage> {
 
   // Bottom navigation pages
   final List<Widget> _pages = [
-    Container(), // Home - will be built in build method
-    Center(child: Text('Map Page')),
+    Container(),
+    MapPage(),
     Center(child: Text('Scan Page')),
     Center(child: Text('Stats Page')),
     Center(child: Text('Settings Page')),

@@ -3,6 +3,7 @@ import 'screens/splash_screen.dart';
 import 'screens/login_page.dart';
 import 'screens/register_page.dart';
 import 'screens/home_page.dart';
+import 'screens/map_page.dart';
 
 void main() {
   runApp(SmartWasteApp());
@@ -22,6 +23,7 @@ class SmartWasteApp extends StatelessWidget {
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
         '/home': (context) => HomePage(),
+        '/map': (context) => MapPage(),
       },
     );
   }
