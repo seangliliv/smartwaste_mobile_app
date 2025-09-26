@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:waste_management_app/screens/map_page.dart';
+import 'package:waste_management_app/screens/scan_page.dart';
 import '../utils/app_color.dart';
 
 class HomePage extends StatefulWidget {
@@ -38,7 +39,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     Container(),
     MapPage(),
-    Center(child: Text('Scan Page')),
+    ScanPage(),
     Center(child: Text('Stats Page')),
     Center(child: Text('Settings Page')),
   ];
